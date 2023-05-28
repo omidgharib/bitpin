@@ -1,6 +1,6 @@
 
 import { useEffect, useState, useRef } from 'react';
-import { Card, Col, Row } from 'antd';
+import { Card, Col, Row, Pagination } from 'antd';
 import { useSelector, useDispatch } from "react-redux";
 import { addMarkets } from "../../redux/actions/addMarkets";
 import { IMarket } from "../../interfaces/IMarket";
@@ -22,6 +22,14 @@ const Markets = () => {
     const dispatch = useDispatch();
 
     const [markets, setMarkets] = useState(marketsData);
+    const [itemOffset, setItemOffset] = useState(0);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const endOffset = itemOffset + itemsPerPage;
+    console.log(`Loading items from ${itemOffset} to ${endOffset}`);
+    const currentItems = markets.slice(itemOffset, endOffset);
+    // const pageCount = Math.ceil(markets.length / itemsPerPage);
 
     useEffect(() => {
         loadMarkets();
@@ -45,13 +53,17 @@ const Markets = () => {
         }
 
         return () => {
-            ws.close()
+            ws.close();
         }
     }, []);
 
     useEffect(() => {
         setMarkets(marketsData);
     }, [marketsData]);
+
+    useEffect(() => {
+
+    }, [itemOffset]);
 
     const loadMarkets = () => {
         axios.get('/mkt/markets/')
@@ -68,18 +80,35 @@ const Markets = () => {
             });
     }
 
+    const handlePageClick = (page, perPage) => {
+        console.log(page, "event", perPage);
+        const newOffset = (page * perPage) % markets.length;
+        console.log(
+            `User requested page number ${page}, which is offset ${newOffset}`
+        );
+        setItemOffset(newOffset);
+        setCurrentPage(page);
+        setItemsPerPage(perPage);
+    };
+
     return (
         <>
             <Row gutter={16}>
                 {
 
-                    markets?.length > 0 ?
-                        markets.map((item, index) => {
+                    currentItems?.length > 0 ?
+                        currentItems.map((item, index) => {
                             return <MarketCard data={item} key={index} />
                         })
                         : null
                 }
             </Row>
+            <Pagination
+                onChange={handlePageClick}
+                current={currentPage}
+                defaultCurrent={1}
+                total={markets.length}
+            />;
         </>
     );
 }
