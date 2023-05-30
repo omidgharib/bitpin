@@ -6,7 +6,6 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import App from './App';
 import routes from "./routes"
 import './style/index.less';
 // import IRoute from "./interfaces/IRoute";
