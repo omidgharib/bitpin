@@ -1,6 +1,6 @@
 
-import { useEffect, useState, useRef } from 'react';
-import { Card, Col, Row, Pagination } from 'antd';
+import { useEffect, useState } from 'react';
+import { Row, Pagination } from 'antd';
 import { useSelector, useDispatch } from "react-redux";
 import { map, assign, find } from "lodash";
 import { addMarkets } from "../../redux/actions/addMarkets";
@@ -14,18 +14,13 @@ const Markets = () => {
     const dispatch = useDispatch();
 
     const [markets, setMarkets] = useState(marketsData);
-    // const [itemOffset, setItemOffset] = useState(0);
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
 
     const itemOffset = (currentPage * itemsPerPage) % markets.length;
-    console.log(
-        `User requested page number ${currentPage}, which is offset ${itemOffset}`
-    );
     const endOffset = itemOffset + itemsPerPage;
     console.log(`Loading items from ${itemOffset} to ${endOffset}`);
     const currentItems = markets.slice(itemOffset, endOffset);
-    // const pageCount = Math.ceil(markets.length / itemsPerPage);
 
     useEffect(() => {
         loadMarkets();
@@ -62,12 +57,6 @@ const Markets = () => {
     }, [itemOffset]);
 
     const handlePageClick = (page, perPage) => {
-        console.log(page, "event", perPage);
-        // const newOffset = (page * perPage) % markets.length;
-        // console.log(
-        //     `User requested page number ${page}, which is offset ${newOffset}`
-        // );
-        // setItemOffset(newOffset);
         setCurrentPage(page);
         setItemsPerPage(perPage);
     };
