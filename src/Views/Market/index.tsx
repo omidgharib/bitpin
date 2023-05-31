@@ -69,7 +69,7 @@ const Markets = () => {
     return (
         <>
             <div className='market-page'>
-                <Row gutter={16} justify={"start"} >
+                <Row gutter={16} justify={"start"}>
                     {
 
                         currentItems?.length > 0 ?
